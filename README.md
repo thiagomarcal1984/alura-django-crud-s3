@@ -35,3 +35,10 @@ class UsuariosConfig(AppConfig):
 > O mesmo deve ser feito no arquivo `admin.py`, `urls.py` e `views.py` de cada app.
 
 4. Atualize os paths no arquivo `setup\urls.py`. As rotas lá precisam ser atualizadas também.
+
+## Refatorando a estilização
+Movemos o arquivo `galerias/base.html` para `shared/base.html` e depois atualizamos os arquivos de template HTML que dependem desse `base.html`.
+
+Os formulário de `usuarios/login.html` e `usuarios/cadastro.html` também precisam referenciar o arquivo movido `shared/base.html`.
+
+Os arquivos de template do app `usuarios` dependiam do Bootstrap até agora. Vamos remover essa dependência e modificar o arquivo `setups/static/styles/style.css`.
