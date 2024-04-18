@@ -46,3 +46,36 @@ Os arquivos de template do app `usuarios` dependiam do Bootstrap até agora. Vam
 # Inserir fotografias
 ## URLs e Views
 Nada demais: acréscimo de algumas URLs do CRUD, das views associadas (inclusive algumas retornando `pass`) e modificações do HTML.
+
+## Formulário de galeria
+Foco nos Widgets e atributos dos objetos do formulário, que estarão contidos no arquivo `apps\galeria\forms.py`:
+
+```python
+from django import forms
+
+from apps.galeria.models import Fotografia
+
+class NovaImagemForm(forms.ModelForm):
+    class Meta:
+        model = Fotografia
+        exclude = ['publicada',]
+        widgets = {
+            'nome' : forms.TextInput(attrs={'class' : 'form-control'}),
+            'legenda' : forms.TextInput(attrs={'class' : 'form-control'}),
+            'categoria' : forms.Select(attrs={'class' : 'form-control'}),
+            'descricao' : forms.Textarea(attrs={'class' : 'form-control'}),
+            'foto' : forms.FileInput(attrs={'class' : 'form-control'}),
+            'data_fotografia' : forms.DateInput(
+                attrs={
+                    'type' : 'date',
+                    'class' : 'form-control',
+                },
+                format = '%d/%m/%Y',
+            ),
+            'usuario' : forms.Select(attrs={'class' : 'form-control'}),
+        }
+```
+> Elementos que compõem os widgets (dentro da classe `Meta`):
+> 1. os Widgets costumam ter a palavra `Input` (exceção para `TextArea` e `Select`);
+> 2. atributos CSS são acrescentados no construtor dos Widgets com o dicionário `attrs`;
+> 3. o campo `DateInput` tem ainda o parâmetro de construtor chamado `format`.
