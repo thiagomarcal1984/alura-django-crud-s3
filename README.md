@@ -79,3 +79,54 @@ class NovaImagemForm(forms.ModelForm):
 > 1. os Widgets costumam ter a palavra `Input` (exceção para `TextArea` e `Select`);
 > 2. atributos CSS são acrescentados no construtor dos Widgets com o dicionário `attrs`;
 > 3. o campo `DateInput` tem ainda o parâmetro de construtor chamado `format`.
+
+## Lógica de novo item
+Mudanças: 
+1. O modelo `Fotografia` foi alterado: o campo `publicada` agora vai usar o valor default `True` ao invés de `False`;
+2. Como o modelo mudou, foi necessário criar a migration do modelo de `Fotografia`;
+3. O formulário em `forms.py` mudou de nome para `FotografiaForms`. Além disso, personalizamos os labels do formulário, usando o dicionário `labels` dentro da subclasse `Meta` do formulário;
+4. A view `galerias.nova_imagem` inseriu lógica para evitar acesso por quem não está logado e uma operação de salvar caso o método do formulário seja `POST` (recurso ainda não testado).
+
+Conteúdo do arquivo `app.galeria.views.py`:
+```python
+from django.shortcuts import render, get_object_or_404, redirect
+
+from apps.galeria.models import Fotografia
+from apps.galeria.forms import FotografiaForms
+
+from django.contrib import messages
+# Resto do código 
+def nova_imagem(request):
+    if not request.user.is_authenticated:
+        messages.error(request, 'Usuário não logado')
+        return redirect('login')
+    form = FotografiaForms()
+    if request.method == 'POST':
+        form = FotografiaForms(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Nova fotografia cadastrada.')
+            return redirect('index')
+        
+    return render(request, 'galeria/nova_imagem.html', {'form' : form})
+```
+Conteúdo do arquivo `app.galeria.forms.py`:
+```python
+from django import forms
+
+from apps.galeria.models import Fotografia
+
+class FotografiaForms(forms.ModelForm):
+    class Meta:
+        model = Fotografia
+        exclude = ['publicada',]
+        widgets = {
+            # Resto do código
+            'usuario' : forms.Select(attrs={'class' : 'form-control'}),
+        }
+        labels = {
+            'descricao' : 'Descrição',
+            'data_fotografia' : 'Data de registro',
+            'usuario' : 'Usuário',
+        }
+```

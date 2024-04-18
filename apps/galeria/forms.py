@@ -2,7 +2,7 @@ from django import forms
 
 from apps.galeria.models import Fotografia
 
-class NovaImagemForm(forms.ModelForm):
+class FotografiaForms(forms.ModelForm):
     class Meta:
         model = Fotografia
         exclude = ['publicada',]
@@ -20,4 +20,9 @@ class NovaImagemForm(forms.ModelForm):
                 format = '%d/%m/%Y',
             ),
             'usuario' : forms.Select(attrs={'class' : 'form-control'}),
+        }
+        labels = {
+            'descricao' : 'Descrição',
+            'data_fotografia' : 'Data de registro',
+            'usuario' : 'Usuário',
         }
