@@ -42,3 +42,7 @@ Movemos o arquivo `galerias/base.html` para `shared/base.html` e depois atualiza
 Os formulário de `usuarios/login.html` e `usuarios/cadastro.html` também precisam referenciar o arquivo movido `shared/base.html`.
 
 Os arquivos de template do app `usuarios` dependiam do Bootstrap até agora. Vamos remover essa dependência e modificar o arquivo `setups/static/styles/style.css`.
+
+# Inserir fotografias
+## URLs e Views
+Nada demais: acréscimo de algumas URLs do CRUD, das views associadas (inclusive algumas retornando `pass`) e modificações do HTML.
