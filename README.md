@@ -130,3 +130,35 @@ class FotografiaForms(forms.ModelForm):
             'usuario' : 'Usuário',
         }
 ```
+
+## Templates e botões
+Ao usar formulários que submetam arquivos (como os de imagem), é necessário modificar o HTML para que o tipo de encoding (`enctype`) seja `multipart-/form-data`:
+
+```HTML
+<!-- Arquivo templates\galeria\nova_imagem.html -->
+<section class="galeria" style="margin-left: 5em">
+    <form action="{% url 'nova_imagem' %}" method="POST" enctype="multipart/form-data">
+        <!-- Resto do código -->
+        <div>
+            <button type="submit" class="btn btn-success col-12" style="padding: top 5px;">Cadastrar Nova Fotografia</button>
+        </div>
+    </form>
+</section>
+```
+
+O backend precisa ser alterado também para processar formulários (note o parâmetro `request.FILES` na construção do formulário):
+```python
+## Arquivo apps\galeria\views.py
+
+# Resto do código
+def nova_imagem(request):
+    # Resto do código
+    form = FotografiaForms()
+    if request.method == 'POST':
+        form = FotografiaForms(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Nova fotografia cadastrada.')
+            return redirect('index')
+
+```
