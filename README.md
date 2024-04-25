@@ -162,3 +162,72 @@ def nova_imagem(request):
             return redirect('index')
 
 ```
+# Deleção, edição e filtro
+## Edição de fotografias
+Modificando as rotas em `galeria/urls.py`:
+```python
+from django.urls import path
+from apps.galeria.views import index, imagem, buscar, nova_imagem, editar_imagem, deletar_imagem
+
+urlpatterns = [
+    path('', index, name='index'),
+    path('imagem/<int:foto_id>', imagem, name='imagem'),
+    path('buscar', buscar, name='buscar'),
+    path('nova-imagem', nova_imagem, name='nova_imagem'),
+    path('editar-imagem/<int:foto_id>', editar_imagem, name='editar_imagem'),
+    path('deletar-imagem', deletar_imagem, name='deletar_imagem'),
+]
+```
+> Note a "tag" `/<int:foto_id>`: ela é o parâmetro fornecido para função `editar_imagem` na view.
+
+Mudança em `views/galeria`:
+```python
+def editar_imagem(request, foto_id):
+    fotografia = Fotografia.objects.get(id=foto_id)
+    form = FotografiaForms(instance=fotografia)
+
+    if request.method == 'POST':
+        form = FotografiaForms(request.POST, request.FILES, instance=fotografia)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Fotografia editada com sucesso.')
+            return redirect('index')
+
+    return render(
+        request, 
+        'galeria/editar_imagem.html', 
+        {
+            'form' : form,
+            'foto_id' : foto_id,
+        }
+    )
+```
+
+Como referenciar a função `editar_imagem` no template de `galeria/imagem.html`:
+```html
+<a href="{% url 'editar_imagem' fotografia.id %}" class="btn btn-success col-12" style="top: 5px">Editar</a>
+```
+
+Template para `galeria/editar_imagem.html`:
+```html
+{% extends 'shared/base.html' %}
+{% load static %}
+{% block content %}
+<section class="galeria" style="margin-left: 5em">
+    <form action="{% url 'editar_imagem' foto_id %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            {% for field in form.visible_fields %}
+            <div class="col-12 col-lg-12" style="margin-bottom: 10px;">
+                <label for="{{ field.id_for_label }}" style="color:#D9D9D9; margin-bottom: 5px;">{{field.label}}</label>
+                {{ field }}
+            </div>
+            {% endfor %}
+        </div>
+        <div>
+            <button type="submit" class="btn btn-success col-12" style="padding: top 5px;">Editar Fotografia</button>
+        </div>
+    </form>
+</section>
+{% endblock %}
+```
