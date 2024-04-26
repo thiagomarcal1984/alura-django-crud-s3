@@ -253,3 +253,41 @@ Como referenciar a função `deletar_imagem` no template de `galeria/imagem.html
 ```html
 <a href="{% url 'deletar_imagem' fotografia.id %}">Deletar</a>
 ```
+
+## Funcionalidade de filtro
+Inclusão da rota de filtros em `galeria/urls.py`:
+```python
+from django.urls import path
+from apps.galeria.views import (
+    # Resto do código
+    filtro,
+)
+
+urlpatterns = [
+    # Resto do código
+    path('filtro/<str:categoria>', filtro, name='filtro'),
+]
+```
+
+Criação da view de filtro em `galeria/views.py`:
+```python
+def buscar(request):
+    # Resto do código
+    # Vamos remover a antiga página `galeria/buscar.html`.
+    return render(request, "galeria/index.html", {"cards": fotografias})
+
+# Resto do código
+def filtro(request, categoria):
+    fotografias = Fotografia.objects.order_by("data_fotografia").filter(publicada=True, categoria=categoria)
+    return render(request, 'galeria/index.html', { 'cards' : fotografias})
+```
+
+Mudança no template `galeria/index.html` para conter as referências à nova view de filtro:
+```html
+<ul class="tags__lista">
+    <li class="tags__tag"><a href="{% url 'filtro' 'NEBULOSA' %}">Nebulosa</a></li>
+    <li class="tags__tag"><a href="{% url 'filtro' 'ESTRELA' %}">Estrela</a></li>
+    <li class="tags__tag"><a href="{% url 'filtro' 'GALÁXIA' %}">Galáxia</a></li>
+    <li class="tags__tag"><a href="{% url 'filtro' 'PLANETA' %}">Planeta</a></li>
+</ul>
+```
