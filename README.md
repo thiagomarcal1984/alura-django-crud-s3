@@ -305,3 +305,31 @@ Ao criar um usuário no IAM:
 * não habilite o acesso ao console (por que?);
 * escolha, na opção de anexar políticas diretamente, a política `AmazonS3FullAccess`;
 * na aba `Credenciais de segurança`, escolha a opção `Criar chave de acesso`. Em seguida, escolha a credencial de `Command Line Interface (CLI)`. Isso vai gerar um par `Chave de acesso` e `Chave de acesso secreta`.
+
+# Melhorando a persistência
+## Conexão com o Django
+Inclua a dependência para as bibliotecas `django-storages` e `boto3`.
+
+Altere as configurações do arquivo `settings.py` logo antes da variável `STATIC_URL` (ou outra variável que começa com static):
+```python
+# settings.py
+
+# Resto do código
+
+# AWS Configuração
+AWS_ACCESS_KEY_ID = 'teste'
+AWS_SECRET_ACCESS_KEY_ID = 'teste'
+AWS_STORAGE_BUCKET_NAME = 'incredible-hulk'
+MEU_DOMINIO = 's3.amazonaws.com'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.{MEU_DOMINIO}' # Caminho dos arquivos.
+AWS_DEFAULT_ACL = 'public-read' # Nome do ACL (Lista de Controle de Acesso).
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl' : 'max-age=86400',
+}
+AWS_LOCATION = 'static'
+AWS_QUERYSTRING_AUTH = False
+AWS_HEADERS = {
+    'Access-Control-Allow_Origin' : '*',
+}
+# Resto do código
+```

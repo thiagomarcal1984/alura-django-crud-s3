@@ -119,6 +119,21 @@ USE_I18N = True
 
 USE_TZ = True
 
+# AWS Configuração
+AWS_ACCESS_KEY_ID = 'teste'
+AWS_SECRET_ACCESS_KEY_ID = 'teste'
+AWS_STORAGE_BUCKET_NAME = 'incredible-hulk'
+MEU_DOMINIO = 's3.amazonaws.com'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.{MEU_DOMINIO}' # Caminho dos arquivos.
+AWS_DEFAULT_ACL = 'public-read' # Nome do ACL (Lista de Controle de Acesso).
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl' : 'max-age=86400',
+}
+AWS_LOCATION = 'static'
+AWS_QUERYSTRING_AUTH = False
+AWS_HEADERS = {
+    'Access-Control-Allow_Origin' : '*',
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
