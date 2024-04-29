@@ -297,3 +297,11 @@ Mudança no template `galeria/index.html` para conter as referências à nova vi
 O bucket AWS tem uma configuração de lista de controle de acesso (ACL - Access Control List).
 
 É necessário criar um usuário que vai fazer o acesso ao bucket.
+
+## Criando um usuário na IAM
+O IAM (Identity and Access Management) é um meio de controlar o acesso de usuários a recursos e serviços da AWS.
+
+Ao criar um usuário no IAM:
+* não habilite o acesso ao console (por que?);
+* escolha, na opção de anexar políticas diretamente, a política `AmazonS3FullAccess`;
+* na aba `Credenciais de segurança`, escolha a opção `Criar chave de acesso`. Em seguida, escolha a credencial de `Command Line Interface (CLI)`. Isso vai gerar um par `Chave de acesso` e `Chave de acesso secreta`.
