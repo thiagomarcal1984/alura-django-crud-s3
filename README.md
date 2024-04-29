@@ -291,3 +291,9 @@ Mudança no template `galeria/index.html` para conter as referências à nova vi
     <li class="tags__tag"><a href="{% url 'filtro' 'PLANETA' %}">Planeta</a></li>
 </ul>
 ```
+
+# Lidando com a AWS
+## Criando um bucket no S3
+O bucket AWS tem uma configuração de lista de controle de acesso (ACL - Access Control List).
+
+É necessário criar um usuário que vai fazer o acesso ao bucket.
