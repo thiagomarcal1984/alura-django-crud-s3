@@ -123,9 +123,9 @@ USE_I18N = True
 USE_TZ = True
 
 # AWS Configuração
-AWS_ACCESS_KEY_ID = 'teste'
-AWS_SECRET_ACCESS_KEY_ID = 'teste'
-AWS_STORAGE_BUCKET_NAME = 'incredible-hulk'
+AWS_ACCESS_KEY_ID = str(os.getenv('AWS_ACCESS_KEY_ID'))
+AWS_SECRET_ACCESS_KEY_ID = str(os.getenv('AWS_SECRET_ACCESS_KEY_ID'))
+AWS_STORAGE_BUCKET_NAME = str(os.getenv('AWS_STORAGE_BUCKET_NAME'))
 MEU_DOMINIO = 's3.amazonaws.com'
 MEU_DOMINIO = 'https://localhost:4566'
 # AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.{MEU_DOMINIO}' # Caminho dos arquivos na AWS.

@@ -389,3 +389,31 @@ Depois de atualizar essa referência, precisamos modificar os templates que refe
 <!-- Resto do código -->
 <img src="{% static 'assets/logo/Logo(2).png' %}" alt="Logo da Alura Space" />
 ```
+
+# Melhorando a segurança
+Use a biblioteca `dotenv` para ocultar informações sensíveis (nome e endereço do bucket, usuário e senha etc.).
+
+Outra coisa é o gerador de chaves secretas do Django (veja o conteúdo do arquivo `scripts\secret_key_generator.py`):
+```python
+from django.core.management.utils import get_random_secret_key
+print(get_random_secret_key())
+```
+> Para gerar a chave secreta, basta executar o script num terminal. Depois você pode copiar essa secret_key para o arquivo `.env`. Como o arquivo `.env` está no `.gitignore`, vamos deixar um exemplo no arquivo `.env.exemplo`.
+
+Mudanças no arquivo `setup\settings.py`:
+```python
+# Resto do código
+# AWS Configuração
+AWS_ACCESS_KEY_ID = str(os.getenv('AWS_ACCESS_KEY_ID'))
+AWS_SECRET_ACCESS_KEY_ID = str(os.getenv('AWS_SECRET_ACCESS_KEY_ID'))
+AWS_STORAGE_BUCKET_NAME = str(os.getenv('AWS_STORAGE_BUCKET_NAME'))
+# Resto do código
+```
+
+Conteúdo do arquivo `.env`:
+```bash
+SECRET_KEY = 'u2*i1ldhsc4q(xox5tbk1o=zx=xy1a2e2m!0!t06juzild1$-j'
+AWS_ACCESS_KEY_ID = 'teste'
+AWS_SECRET_ACCESS_KEY_ID = 'teste'
+AWS_STORAGE_BUCKET_NAME = 'incredible-hulk'
+```
