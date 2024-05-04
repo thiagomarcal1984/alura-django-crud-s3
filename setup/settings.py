@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     'apps.galeria.apps.GaleriaConfig',   
     # Não se esqueça de modificar a referência para 'apps.usuarios' no arquivo 'UsuariosConfig'.
     'apps.usuarios.apps.UsuariosConfig', 
+
+    # A dependência django-storages
+    'storages', 
 ]
 
 MIDDLEWARE = [
@@ -124,7 +127,10 @@ AWS_ACCESS_KEY_ID = 'teste'
 AWS_SECRET_ACCESS_KEY_ID = 'teste'
 AWS_STORAGE_BUCKET_NAME = 'incredible-hulk'
 MEU_DOMINIO = 's3.amazonaws.com'
-AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.{MEU_DOMINIO}' # Caminho dos arquivos.
+MEU_DOMINIO = 'https://localhost:4566'
+# AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.{MEU_DOMINIO}' # Caminho dos arquivos na AWS.
+AWS_S3_CUSTOM_DOMAIN = f'{MEU_DOMINIO}/{AWS_STORAGE_BUCKET_NAME}' # Caminho dos arquivos.
+AWS_S3_CUSTOM_DOMAIN = 'https://localhost:4566/incredible-hulk'
 AWS_DEFAULT_ACL = 'public-read' # Nome do ACL (Lista de Controle de Acesso).
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl' : 'max-age=86400',
@@ -132,13 +138,25 @@ AWS_S3_OBJECT_PARAMETERS = {
 AWS_LOCATION = 'static'
 AWS_QUERYSTRING_AUTH = False
 AWS_HEADERS = {
-    'Access-Control-Allow_Origin' : '*',
+    'Access-Control-Allow-Origin' : '*',
 }
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+# Documentação atual: https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
+# Variáveis na documentação atual:
+# DEFAULT_FILE_STORAGE = "storages.backends.s3.S3Storage" # Django <  4.2
+# STATICFILES_STORAGE = "storages.backends.s3.S3Storage"  # Django >= 4.2
+
+# Documentação antiga (usada no curso): https://django-storages.readthedocs.io/en/1.5.2/backends/amazon-S3.html
+# Variáveis na documentação antiga:
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto.S3Boto3Storage' # Este import falha.
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+STATIC_URL = 'static/' # Anterior
+# STATIC_URL = f'http://{AWS_S3_CUSTOM_DOMAIN}/static/' # A barra no final é obrigatória.
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'setup/static')
@@ -150,7 +168,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-MEDIA_URL = "/media/"
+MEDIA_URL = "/media/" # Anterior
+# MEDIA_URL = f'http://{AWS_S3_CUSTOM_DOMAIN}/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

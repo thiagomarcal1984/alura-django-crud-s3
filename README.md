@@ -329,7 +329,63 @@ AWS_S3_OBJECT_PARAMETERS = {
 AWS_LOCATION = 'static'
 AWS_QUERYSTRING_AUTH = False
 AWS_HEADERS = {
-    'Access-Control-Allow_Origin' : '*',
+    'Access-Control-Allow-Origin' : '*',
 }
 # Resto do código
+```
+## Fotografias no bucket
+Atualização do arquivo `setup.settings.py`:
+```python
+# Resto do código
+INSTALLED_APPS = [
+    # Resto do código
+    # Referência à dependência django-storages
+    'storages', 
+]
+# Resto do código
+
+# AWS Configuração
+AWS_ACCESS_KEY_ID = 'teste'
+AWS_SECRET_ACCESS_KEY_ID = 'teste'
+AWS_STORAGE_BUCKET_NAME = 'incredible-hulk'
+MEU_DOMINIO = 's3.amazonaws.com'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.{MEU_DOMINIO}' # Caminho dos arquivos na AWS.
+AWS_DEFAULT_ACL = 'public-read' # Nome do ACL (Lista de Controle de Acesso).
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl' : 'max-age=86400',
+}
+AWS_LOCATION = 'static'
+AWS_QUERYSTRING_AUTH = False
+AWS_HEADERS = {
+    'Access-Control-Allow-Origin' : '*',
+}
+
+# Documentação antiga (usada no curso): https://django-storages.readthedocs.io/en/1.5.2/backends/amazon-S3.html
+# Variáveis na documentação antiga:
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto.S3Boto3Storage' # Este import falha.
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# STATIC_URL = 'static/' # Anterior
+STATIC_URL = f'http://{AWS_S3_CUSTOM_DOMAIN}/static/' # A barra no final é obrigatória.
+
+# Resto do código 
+# MEDIA_URL = "/media/" # Anterior
+MEDIA_URL = f'http://{AWS_S3_CUSTOM_DOMAIN}/media/'
+
+```
+
+Atualização do arquivo `setup.urls.py`:
+```python
+# Resto do código
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+```
+Depois de atualizar essa referência, precisamos modificar os templates que referenciam o app `static`, removendo a primeira barra de cada referência da função `static`.
+```HTML
+<!-- Resto do código -->
+<link rel="stylesheet" href="{% static 'styles/style.css' %}">
+<!-- Resto do código -->
+<img src="{% static 'assets/logo/Logo(2).png' %}" alt="Logo da Alura Space" />
 ```
